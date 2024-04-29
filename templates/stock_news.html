@@ -1,0 +1,229 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock News</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    <style>
+        /* Add custom styles here */
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .card {
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #343a40;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 10px 10px 0 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+      .card-header  h1 {
+            text-align: center;
+            font-size: 2.5rem;
+        }
+
+
+        form label {
+            font-weight: bold;
+            color: #343a40;
+        }
+        form input[type="text"],form input[type="number"],form button[type="submit"] {
+            margin-bottom: 20px;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            width: 100%;
+            max-width: 400px;
+        }
+        form button[type="submit"] {
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        form button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 20px; /* Increase padding */
+            border-bottom: 1px solid #ddd;
+            color: #343a40;
+            font-size: 1.2rem; /* Increase font size */
+        }
+        .stock-container {
+            padding: 20px;
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+
+        }
+
+          .form-container {
+            background: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+          }
+          .form-container h1 h2 {
+              margin-bottom: 30px;
+              font-size: 2rem;
+              color: #343a40;
+          }
+          .item {
+              display: flex;
+              align-items: center;
+              margin-bottom: 20px;
+              padding: 20px;
+              border-radius: 10px;
+              background-color: #fff;
+              box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
+          }
+
+          .item h4 {
+              font-size: 1.5rem;
+              margin-right: 10px;
+              color: #343a40;
+          }
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/news">Stock Analysis</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="/news">News</a>
+                    </li>
+                  <li class="nav-item">
+                        <a class="nav-link" href="/day">Day</a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+      <div class="card">
+
+      <div class="card-header"><h1>Stock News</h1></div>
+
+        <div class="stock-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="days" class="form-label">Enter How Many days ago news you want:</label>
+                    <input type="number" id="days" name="days" class="form-control" min="1" value="1" required>
+                </div>
+                <div class="mb-3">
+                    <label for="topics" class="form-label">Enter Topics (comma-separated):</label>
+                    <input type="text" id="topics" name="topics" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Fetch News</button>
+            </form>
+          </div>
+        </div>
+
+          <div class="form-container">
+
+            {% if news %}
+                <div class="card-header"><h1>News articles on {{ topics }}</h1></div>
+                <ul class="list-group">
+                    {% for article in news %}
+                        <li class="list-group-item">
+                            <h4 class="item mb-3">{{ article.title }}</h4>
+                            <p><strong>Published:</strong> {{ article.published }}</p>
+                            {% if article.image_url %}
+                                <img src="{{ article.image_url }}" alt="News Image" class="img-fluid rounded">
+                            {% endif %}
+                            <p><a href="{{ article.link }}" target="_blank" class="btn btn-primary mt-3">Read More</a></p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class=" item mt-5">No news articles found for {{ topics }}.</p>
+            {% endif %}
+
+
+            <!-- <div class="card-header"><h1>Stock News</h1></div>
+
+              <div class="stock-container">
+                <form method="get">
+                    <label for="select_company">Select Company:</label>
+                    <select name="select_company" id="select_company">
+                        {% for company_name, company_symbol in companies %}
+                            <option value="{{ company_symbol }}" {% if company_symbol == selected_company %} selected {% endif %}>
+                                {{ company_name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    <div class="mb-3">
+                        <label for="days" class="form-label">Enter How Many days ago news you want:</label>
+                        <input type="number" id="days" name="days" class="form-control" min="1" value="1" required>
+                    </div>
+
+                    <button type="submit">Get News</button>
+                </form>
+                </div>
+              </div>
+
+            <div class="form-container">
+
+              {% if news %}
+                  <div class="card-header"><h1>News articles on {{ selected_company }}</h1></div>
+                  <ul class="list-group">
+                      {% for article in news %}
+                          <li class="list-group-item">
+                              <h4 class="item mb-3">{{ article.title }}</h4>
+                              <p><strong>Published:</strong> {{ article.published }}</p>
+                              {% if article.image_url %}
+                                  <img src="{{ article.image_url }}" alt="News Image" class="img-fluid rounded">
+                              {% endif %}
+                              <p><a href="{{ article.link }}" target="_blank" class="btn btn-primary mt-3">Read More</a></p>
+                          </li>
+                      {% endfor %}
+                  </ul>
+              {% else %}
+                  <p class=" item mt-5">No news articles found for {{ selected_company }}.</p>
+              {% endif %}
+
+        </div>-->
+    </div>
+  </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+</body>
+</html>
