@@ -12,8 +12,11 @@ idna==3.2   # Downgraded version
 importlib-resources==5.3.0  # Downgraded version
 kiwisolver==1.3.2  # Downgraded version
 lxml==4.6.3
+matplotlib==3.4.3
 multitasking==0.0.9  # Downgraded version
+numpy==1.21.2
 packaging==21.0   # Downgraded version
+pandas==1.3.3
 peewee==3.14.4
 pillow==8.3.2
 psycopg2-binary==2.9.1  # Downgraded version
@@ -25,3 +28,4 @@ six==1.16.0
 soupsieve==2.3.1  # Downgraded version
 sqlparse==0.4.2
 urllib3==1.26.7  # Downgraded version
+yfinance==0.1.63  # Downgraded version
