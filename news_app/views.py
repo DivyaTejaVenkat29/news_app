@@ -30,11 +30,23 @@ def fetch_stock_news(topics, days=1):
         # Parse the publication date of the article
         published_date = datetime.strptime(entry.published, "%a, %d %b %Y %H:%M:%S %Z")
         # Check if the article was published in the last 'days' days
+        published_date = published_date.replace(tzinfo=None)
+
         if published_date >= target_date:
             # Extract image URL if available
             image_url = None
             if 'media_content' in entry and len(entry.media_content) > 0:
+                # Attempt to extract image URL from 'media_content'
                 image_url = entry.media_content[0]['url']
+            elif 'enclosures' in entry and len(entry.enclosures) > 0:
+                # Attempt to extract image URL from 'enclosures'
+                image_url = entry.enclosures[0]['url']
+            elif 'links' in entry and len(entry.links) > 0:
+                # Attempt to extract image URL from 'links'
+                for link in entry.links:
+                    if link.get('type', '').startswith('image/'):
+                        image_url = link['href']
+                        break
 
             news_list.append({
                 'title': entry.title,
@@ -86,12 +98,27 @@ def fetch_stock_news1(topics, days=1):
             published_date = published_date.replace(tzinfo=None)
             # Check if the article was published in the last 'days' days
             if published_date >= target_date:
+                image_url = None
+                if 'media_content' in entry and len(entry.media_content) > 0:
+                    # Attempt to extract image URL from 'media_content'
+                    image_url = entry.media_content[0]['url']
+                elif 'enclosures' in entry and len(entry.enclosures) > 0:
+                    # Attempt to extract image URL from 'enclosures'
+                    image_url = entry.enclosures[0]['url']
+                elif 'links' in entry and len(entry.links) > 0:
+                    # Attempt to extract image URL from 'links'
+                    for link in entry.links:
+                        if link.get('type', '').startswith('image/'):
+                            image_url = link['href']
+                            break
                 news_list.append({
                     'source': source,
                     'title': entry.title,
                     'summary': entry.summary,
                     'link': entry.link,
-                    'published': published_date.strftime("%Y-%m-%d %H:%M:%S")
+                    'published': published_date.strftime("%Y-%m-%d %H:%M:%S"),
+                    'image_url': image_url  # Include image URL in the news information
+
                 })
 
     return news_list

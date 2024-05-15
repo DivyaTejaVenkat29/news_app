@@ -106,6 +106,54 @@
               color: #343a40;
           }
 
+                    /*different styles*/
+          /* Add custom CSS styles */
+.news-card {
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+}
+
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card-text {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-top: 1px solid #dee2e6;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.text-muted {
+    font-size: 0.9rem;
+}
+
+
+
     </style>
 </head>
 
@@ -131,7 +179,7 @@
         </div>
     </nav>
 
-    <div class="container">
+    <!-- <div class="container">
       <div class="card">
 
       <div class="card-header"><h1>Minute to Minute News</h1></div>
@@ -169,8 +217,50 @@
             {% endif %}
           </div>
         </div>
+ -->
+ <div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h1>Minute to Minute Stock News</h1>
+        </div>
+        <div class="stock-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="days" class="form-label">Enter How Many days ago news you want:</label>
+                    <input type="number" id="days" name="days" class="form-control" min="1" value="1" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Fetch News</button>
+            </form>
+          </div>
+        </div>
 
-          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                <div class="card-body">
+                    {% if news %}
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {% for article in news %}
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <img src="{{ article.image_url }}" class="card-img-top" alt="News Image">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ article.title }}</h5>
+                                            <p class="card-text">{{ article.summary }}</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <small class="text-muted">{{ article.published }}</small>
+                                            <a href="{{ article.link }}" target="_blank" class="btn btn-primary float-end">Read More</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>No news articles found.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+                  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
           <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
           <script>
               AOS.init();
