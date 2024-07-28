@@ -1,10 +1,6 @@
 from django.shortcuts import render
 from datetime import datetime,timedelta
-from bs4 import BeautifulSoup
-import requests
 from django.http import request
-import io
-import base64
 import feedparser
 import urllib.parse
 import warnings
