@@ -1,6 +1,6 @@
 asgiref==3.8.1
 beautifulsoup4==4.9.3
-certifi==2024.2.2
+certifi==2024.7.4
 charset-normalizer==2.0.12
 Django==4.0
 feedparser==6.0.11
